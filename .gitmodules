@@ -1,0 +1,3 @@
+[submodule "vtparse"]
+	path = vtparse
+	url = https://github.com/haberman/vtparse.git

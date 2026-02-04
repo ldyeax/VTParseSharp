@@ -1,0 +1,8 @@
+# Operating System
+desktop.ini
+desktop.ini.meta
+
+# Visual Studio
+.vs/
+bin/
+obj/
