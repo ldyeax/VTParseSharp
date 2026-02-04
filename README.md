@@ -99,7 +99,7 @@ The parser generates the following actions via the callback:
 This code is in the public domain.
 
 ## Credits
-
+- Uses [Fork by AirDeeEx](https://github.com/AirDeeEx/vtparse.git)
 - [Original C implementation](https://github.com/haberman/vtparse): Joshua Haberman <joshua@reverberate.org>
 - [State machine specification](http://www.vt100.net/emu/dec_ansi_parser): Paul Williams
 - Thanks to Julian Scheid for bugfixes and enhancements to the original
