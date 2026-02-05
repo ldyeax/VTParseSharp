@@ -1,0 +1,40 @@
+# MSVC Makefile for vtparse
+# Usage: nmake /f Makefile.msvc [target]
+#
+# Targets:
+#   all       - Build test executable and static library (default)
+#   test      - Build test executable only
+#   lib       - Build static library only
+#   clean     - Remove all build artifacts
+
+CC = cl
+AR = lib
+CFLAGS = /nologo /W4 /O2 /D_CRT_SECURE_NO_WARNINGS
+ARFLAGS = /nologo
+
+OBJS = vtparse.obj vtparse_table.obj
+LIB_NAME = vtparse.lib
+TEST_EXE = test.exe
+
+all: $(LIB_NAME) $(TEST_EXE)
+
+lib: $(LIB_NAME)
+
+test: $(TEST_EXE)
+
+$(LIB_NAME): $(OBJS)
+	$(AR) $(ARFLAGS) /OUT:$@ $(OBJS)
+
+$(TEST_EXE): ..\vtparse\vtparse_test.c ..\vtparse\vtparse.c ..\vtparse\vtparse_table.c ..\vtparse\vtparse.h ..\vtparse\vtparse_table.h
+	$(CC) $(CFLAGS) /Fe$@ ..\vtparse\vtparse_test.c ..\vtparse\vtparse.c ..\vtparse\vtparse_table.c
+
+vtparse.obj: ..\vtparse\vtparse.c ..\vtparse\vtparse.h ..\vtparse\vtparse_table.h
+	$(CC) $(CFLAGS) /c ..\vtparse\vtparse.c
+
+vtparse_table.obj: ..\vtparse\vtparse_table.c ..\vtparse\vtparse_table.h
+	$(CC) $(CFLAGS) /c ..\vtparse\vtparse_table.c
+
+clean:
+	-del /Q $(OBJS) $(LIB_NAME) $(TEST_EXE) 2>nul
+
+.PHONY: all lib test clean
