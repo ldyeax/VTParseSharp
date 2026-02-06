@@ -1,6 +1,6 @@
 # VTParse for .NET
 
-A pure C# implementation of Paul Williams' DEC compatible state machine parser for VT terminal emulation.
+A pure C# implementation of Paul Williams' DEC compatible state machine parser for VT terminal emulation, with UTF-8 multi-byte character support.
 
 Original implementation: http://www.vt100.net/emu/dec_ansi_parser
 
@@ -15,9 +15,10 @@ Add a reference to the VTParse library in your project.
 ## Usage
 
 ```csharp
-using VTParse;
+using VTParseSharp;
 
 // Create a parser with a callback
+// Note: ch is uint to support full Unicode codepoints from UTF-8 sequences
 var parser = new VTParser((p, action, ch) =>
 {
     Console.WriteLine($"Action: {VTParser.GetActionName(action)}");
@@ -42,7 +43,7 @@ var parser = new VTParser((p, action, ch) =>
     Console.WriteLine();
 });
 
-// Parse some data
+// Parse some data (UTF-8 multi-byte characters are decoded automatically)
 byte[] data = /* your terminal data */;
 parser.Parse(data);
 
@@ -71,7 +72,19 @@ The parser generates the following actions via the callback:
 | `OscEnd` | End of an OSC sequence |
 | `Error` | An error occurred |
 
+## UTF-8 Support
+
+The parser automatically handles UTF-8 multi-byte character sequences. When a multi-byte UTF-8 lead byte is encountered, the parser accumulates continuation bytes and emits a single `Print` action with the fully decoded Unicode codepoint as `uint ch`.
+
 ## API Reference
+
+### VTParseCallback Delegate
+
+```csharp
+public delegate void VTParseCallback(VTParser parser, VTParseAction action, uint ch);
+```
+
+The `ch` parameter is `uint` (not `byte`) to support Unicode codepoints beyond the ASCII range decoded from UTF-8 sequences.
 
 ### VTParser Class
 
