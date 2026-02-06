@@ -5,13 +5,25 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>VTParse</RootNamespace>
-    <AssemblyName>VTParse</AssemblyName>
+    <AssemblyName>VTParseSharp</AssemblyName>
     <Version>1.0.0</Version>
     <Authors>Joshua Haberman</Authors>
     <Description>VTParse - an implementation of Paul Williams' DEC compatible state machine parser for VT terminal emulation</Description>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
-    <PackageProjectUrl>http://www.vt100.net/emu/dec_ansi_parser</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ldyeax/VTParseSharp</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <SignAssembly>False</SignAssembly>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>jimm@jimm.horse</Copyright>
+    <RepositoryUrl>https://github.com/ldyeax/VTParseSharp</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
