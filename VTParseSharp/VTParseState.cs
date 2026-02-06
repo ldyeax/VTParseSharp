@@ -7,7 +7,7 @@
  * This code is in the public domain.
  */
 
-namespace VTParse
+namespace VTParseSharp
 {
     /// <summary>
     /// States of the VT parser state machine.

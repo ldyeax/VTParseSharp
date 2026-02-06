@@ -7,7 +7,7 @@
  * This code is in the public domain.
  */
 
-namespace VTParse
+namespace VTParseSharp
 {
     /// <summary>
     /// Actions that can be performed during VT parsing.

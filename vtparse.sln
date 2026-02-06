@@ -1,12 +1,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vtparse", "vtparse", "{5BF57F69-0440-B380-0514-808BBC46D8E4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTParse", "VTParseSharp\VTParse.csproj", "{BE6ED212-52D9-91CD-8B67-2621FA3E574F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTParseSharp", "VTParseSharp\VTParseSharp.csproj", "{BE6ED212-52D9-91CD-8B67-2621FA3E574F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vtparse", "vtparse_msvc\vtparse.vcxproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vtparse_test", "vtparse_msvc\vtparse_test.vcxproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTParseSharp_Test", "VTParseSharp_Test\VTParseSharp_Test.csproj", "{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTParseSharp_MSTest", "VTParseSharp_MSTest\VTParseSharp_MSTest.csproj", "{4D436603-14EA-45EC-89B0-5FF8C44BB958}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,13 +46,45 @@ Global
 		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Win32.Build.0 = Release|Win32
 		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|x64.ActiveCfg = Release|x64
 		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|x64.Build.0 = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Debug|Any CPU.Build.0 = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Debug|Win32.Build.0 = Debug|Win32
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Debug|x64.ActiveCfg = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Debug|x64.Build.0 = Debug|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Release|Any CPU.ActiveCfg = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Release|Any CPU.Build.0 = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Release|Win32.ActiveCfg = Release|Win32
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Release|Win32.Build.0 = Release|Win32
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Release|x64.ActiveCfg = Release|x64
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}.Release|x64.Build.0 = Release|x64
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Debug|Win32.Build.0 = Debug|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Debug|x64.Build.0 = Debug|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Release|Win32.ActiveCfg = Release|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Release|Win32.Build.0 = Release|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Release|x64.ActiveCfg = Release|Any CPU
+		{15EFE2B4-C4C8-4426-B612-51B13BC6B0F5}.Release|x64.Build.0 = Release|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Debug|Win32.Build.0 = Debug|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Release|Win32.ActiveCfg = Release|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Release|Win32.Build.0 = Release|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D436603-14EA-45EC-89B0-5FF8C44BB958}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{BE6ED212-52D9-91CD-8B67-2621FA3E574F} = {5BF57F69-0440-B380-0514-808BBC46D8E4}
-		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890} = {5BF57F69-0440-B380-0514-808BBC46D8E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21153183-4040-49C0-AB0B-81EB0073E63E}

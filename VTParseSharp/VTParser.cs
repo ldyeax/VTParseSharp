@@ -9,15 +9,15 @@
 
 using System;
 
-namespace VTParse
+namespace VTParseSharp
 {
     /// <summary>
     /// Callback delegate for VT parse events.
     /// </summary>
     /// <param name="parser">The parser instance that triggered the event.</param>
     /// <param name="action">The action being performed.</param>
-    /// <param name="ch">The character associated with the action (0 if none).</param>
-    public delegate void VTParseCallback(VTParser parser, VTParseAction action, byte ch);
+    /// <param name="ch">The character or Unicode codepoint associated with the action (0 if none).</param>
+    public delegate void VTParseCallback(VTParser parser, VTParseAction action, uint ch);
 
     /// <summary>
     /// VT terminal escape sequence parser implementing Paul Williams' DEC compatible state machine.
@@ -45,6 +45,8 @@ namespace VTParse
         private bool _ignoreFlagged;
         private readonly int[] _params;
         private int _numParams;
+        private int _characterBytes;
+        private uint _utf8Character;
 
         /// <summary>
         /// Gets or sets user-defined data associated with this parser instance.
@@ -90,6 +92,7 @@ namespace VTParse
             _callback = callback;
             _intermediateChars = new byte[MaxIntermediateChars + 1];
             _params = new int[MaxParams];
+            _characterBytes = 1;
             Reset();
         }
 
@@ -102,6 +105,8 @@ namespace VTParse
             _numIntermediateChars = 0;
             _numParams = 0;
             _ignoreFlagged = false;
+            _characterBytes = 1;
+            _utf8Character = 0;
         }
 
         /// <summary>
@@ -113,8 +118,55 @@ namespace VTParse
             for (int i = 0; i < data.Length; i++)
             {
                 byte ch = data[i];
-                byte change = VTParseTable.StateTable[(int)_state - 1][ch];
-                DoStateChange(change, ch);
+                if (_characterBytes != 1)
+                {
+                    _utf8Character = (_utf8Character << 6) | (uint)(ch & 0x3F);
+                    _characterBytes--;
+
+                    if (_characterBytes == 1)
+                    {
+                        byte change = (byte)VTParseAction.Print;
+                        DoStateChange(change, _utf8Character);
+                    }
+                }
+                else if ((ch & (1 << 7)) != 0)
+                {
+                    int bit = 6;
+                    do
+                    {
+                        if ((ch & (1 << bit)) == 0)
+                        {
+                            break;
+                        }
+                        bit--;
+                    } while (bit > 1);
+
+                    _utf8Character = 0;
+                    _characterBytes = 7 - bit;
+                    switch (_characterBytes)
+                    {
+                        case 2:
+                            _utf8Character = (uint)(ch & 0x1F);
+                            break;
+                        case 3:
+                            _utf8Character = (uint)(ch & 0x0F);
+                            break;
+                        case 4:
+                            _utf8Character = (uint)(ch & 0x07);
+                            break;
+                        case 5:
+                            _utf8Character = (uint)(ch & 0x03);
+                            break;
+                        case 6:
+                            _utf8Character = (uint)(ch & 0x01);
+                            break;
+                    }
+                }
+                else
+                {
+                    byte change = VTParseTable.StateTable[(int)_state - 1][ch];
+                    DoStateChange(change, ch);
+                }
             }
         }
 
@@ -124,8 +176,55 @@ namespace VTParse
         /// <param name="ch">The byte to parse.</param>
         public void Parse(byte ch)
         {
-            byte change = VTParseTable.StateTable[(int)_state - 1][ch];
-            DoStateChange(change, ch);
+            if (_characterBytes != 1)
+            {
+                _utf8Character = (_utf8Character << 6) | (uint)(ch & 0x3F);
+                _characterBytes--;
+
+                if (_characterBytes == 1)
+                {
+                    byte change = (byte)VTParseAction.Print;
+                    DoStateChange(change, _utf8Character);
+                }
+            }
+            else if ((ch & (1 << 7)) != 0)
+            {
+                int bit = 6;
+                do
+                {
+                    if ((ch & (1 << bit)) == 0)
+                    {
+                        break;
+                    }
+                    bit--;
+                } while (bit > 1);
+
+                _utf8Character = 0;
+                _characterBytes = 7 - bit;
+                switch (_characterBytes)
+                {
+                    case 2:
+                        _utf8Character = (uint)(ch & 0x1F);
+                        break;
+                    case 3:
+                        _utf8Character = (uint)(ch & 0x0F);
+                        break;
+                    case 4:
+                        _utf8Character = (uint)(ch & 0x07);
+                        break;
+                    case 5:
+                        _utf8Character = (uint)(ch & 0x03);
+                        break;
+                    case 6:
+                        _utf8Character = (uint)(ch & 0x01);
+                        break;
+                }
+            }
+            else
+            {
+                byte change = VTParseTable.StateTable[(int)_state - 1][ch];
+                DoStateChange(change, ch);
+            }
         }
 
         /// <summary>
@@ -154,7 +253,7 @@ namespace VTParse
             return "<unknown>";
         }
 
-        private void DoStateChange(byte change, byte ch)
+        private void DoStateChange(byte change, uint ch)
         {
             var newState = (VTParseState)(change >> StateShift);
             var action = (VTParseAction)(change & ActionMask);
@@ -186,7 +285,7 @@ namespace VTParse
             }
         }
 
-        private void DoAction(VTParseAction action, byte ch)
+        private void DoAction(VTParseAction action, uint ch)
         {
             // Some actions we handle internally (like parsing parameters),
             // others we hand to our client for processing
@@ -218,7 +317,7 @@ namespace VTParse
                     }
                     else
                     {
-                        _intermediateChars[_numIntermediateChars++] = ch;
+                        _intermediateChars[_numIntermediateChars++] = (byte)ch;
                     }
                     break;
 
@@ -227,10 +326,12 @@ namespace VTParse
                     if (ch == ';')
                     {
                         _numParams++;
-                        if (_numParams <= MaxParams)
+                        if (_numParams > MaxParams)
                         {
-                            _params[_numParams - 1] = 0;
+                            _callback?.Invoke(this, VTParseAction.Error, 0);
+                            break;
                         }
+                        _params[_numParams - 1] = 0;
                     }
                     else
                     {
@@ -241,12 +342,9 @@ namespace VTParse
                             _params[0] = 0;
                         }
 
-                        if (_numParams <= MaxParams)
-                        {
-                            int currentParam = _numParams - 1;
-                            _params[currentParam] *= 10;
-                            _params[currentParam] += (ch - '0');
-                        }
+                        int currentParam = _numParams - 1;
+                        _params[currentParam] *= 10;
+                        _params[currentParam] += (int)(ch - '0');
                     }
                     break;
 
