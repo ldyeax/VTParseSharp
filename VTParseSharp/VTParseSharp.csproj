@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>VTParse</RootNamespace>
     <AssemblyName>VTParseSharp</AssemblyName>
+    <InGameTerminalCopyToUnityAssemblies>true</InGameTerminalCopyToUnityAssemblies>
     <Version>1.0.0</Version>
     <Authors>Joshua Haberman</Authors>
     <Description>VTParse - an implementation of Paul Williams' DEC compatible state machine parser for VT terminal emulation</Description>
