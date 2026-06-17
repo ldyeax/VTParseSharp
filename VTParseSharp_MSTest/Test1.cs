@@ -7,7 +7,7 @@ namespace VTParseSharp_MSTest
     [TestClass]
     public sealed class Test1
     {
-        private static readonly string Root = Path.GetFullPath("test_files");
+        private static readonly string Root = Path.GetFullPath("test_files", AppContext.BaseDirectory);
         private const int ProcessTimeoutMs = 30000;
 
         public TestContext TestContext { get; set; } = null!;
@@ -23,10 +23,14 @@ namespace VTParseSharp_MSTest
 
         private void TestExecutable(string executable, string testFilePath, List<string> output)
         {
+            var executablePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, executable));
+            Assert.IsTrue(File.Exists(executablePath), $"Missing test executable: {executablePath}");
+
             var startInfo = new ProcessStartInfo
             {
-                FileName = executable,
+                FileName = executablePath,
                 Arguments = "--codes-only",
+                WorkingDirectory = AppContext.BaseDirectory,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,

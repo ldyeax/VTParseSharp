@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
-#include "vtparse.h"
+#include "../vtparse/vtparse.h"
 
 int codesOnly = 0;
 

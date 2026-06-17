@@ -18,8 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\VTParseSharp\VTParseSharp.csproj" />
     <ProjectReference Include="..\VTParseSharp_Test\VTParseSharp_Test.csproj" />
-    <ProjectReference Include="..\vtparse_msvc\vtparse.vcxproj" />
-    <ProjectReference Include="..\vtparse_msvc\vtparse_test.vcxproj" />
+    <ProjectReference Include="..\vtparse_msvc\vtparse.vcxproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\vtparse_msvc\vtparse_test.vcxproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,5 +55,31 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <PropertyGroup>
+    <VtParseNativePlatform Condition="'$(Platform)' == 'x86' or '$(Platform)' == 'Win32'">Win32</VtParseNativePlatform>
+    <VtParseNativePlatform Condition="'$(VtParseNativePlatform)' == ''">x64</VtParseNativePlatform>
+    <VtParseNativeSolutionOutputDir>$(MSBuildThisFileDirectory)..\..\vtparse_msvc\bin\$(Configuration)\$(VtParseNativePlatform)\</VtParseNativeSolutionOutputDir>
+    <VtParseNativeProjectOutputDir>$(MSBuildThisFileDirectory)..\vtparse_msvc\bin\$(Configuration)\$(VtParseNativePlatform)\</VtParseNativeProjectOutputDir>
+  </PropertyGroup>
+
+  <Target Name="CopyVtParseNativeTestExecutable" AfterTargets="Build" Condition="'$(OS)' == 'Windows_NT'">
+    <ItemGroup Condition="Exists('$(VtParseNativeSolutionOutputDir)vtparse_test.exe')">
+      <VtParseNativeTestExecutable Include="$(VtParseNativeSolutionOutputDir)vtparse_test.exe" />
+      <VtParseNativeTestExecutable Include="$(VtParseNativeSolutionOutputDir)vtparse_test.pdb" Condition="Exists('$(VtParseNativeSolutionOutputDir)vtparse_test.pdb')" />
+    </ItemGroup>
+    <ItemGroup Condition="'@(VtParseNativeTestExecutable)' == '' and Exists('$(VtParseNativeProjectOutputDir)vtparse_test.exe')">
+      <VtParseNativeTestExecutable Include="$(VtParseNativeProjectOutputDir)vtparse_test.exe" />
+      <VtParseNativeTestExecutable Include="$(VtParseNativeProjectOutputDir)vtparse_test.pdb" Condition="Exists('$(VtParseNativeProjectOutputDir)vtparse_test.pdb')" />
+    </ItemGroup>
+
+    <Error
+      Condition="'@(VtParseNativeTestExecutable)' == ''"
+      Text="Could not find vtparse_test.exe. Expected it at $(VtParseNativeSolutionOutputDir) or $(VtParseNativeProjectOutputDir)." />
+    <Copy
+      SourceFiles="@(VtParseNativeTestExecutable)"
+      DestinationFolder="$(TargetDir)"
+      SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>
