@@ -20,6 +20,19 @@ namespace VTParseSharp
     public delegate void VTParseCallback(VTParser parser, VTParseAction action, uint ch);
 
     /// <summary>
+    /// Callback delegate for observing VT parse state transitions.
+    /// </summary>
+    public delegate void VTParseTransitionCallback(
+        VTParser parser,
+        VTParseState fromState,
+        VTParseState toState,
+        VTParseAction transitionAction,
+        VTParseAction exitAction,
+        VTParseAction entryAction,
+        uint ch
+    );
+
+    /// <summary>
     /// VT terminal escape sequence parser implementing Paul Williams' DEC compatible state machine.
     /// See: http://www.vt100.net/emu/dec_ansi_parser
     /// </summary>
@@ -52,6 +65,11 @@ namespace VTParseSharp
         /// Gets or sets user-defined data associated with this parser instance.
         /// </summary>
         public object? UserData { get; set; }
+
+        /// <summary>
+        /// Gets or sets a callback for debugging parser state transitions.
+        /// </summary>
+        public VTParseTransitionCallback? TransitionCallback { get; set; }
 
         /// <summary>
         /// Gets the current state of the parser.
@@ -255,6 +273,7 @@ namespace VTParseSharp
 
         private void DoStateChange(byte change, uint ch)
         {
+            var oldState = _state;
             var newState = (VTParseState)(change >> StateShift);
             var action = (VTParseAction)(change & ActionMask);
 
@@ -278,10 +297,28 @@ namespace VTParseSharp
                     DoAction(entryAction, 0);
 
                 _state = newState;
+                TransitionCallback?.Invoke(
+                    this,
+                    oldState,
+                    newState,
+                    action,
+                    exitAction,
+                    entryAction,
+                    ch
+                );
             }
             else
             {
                 DoAction(action, ch);
+                TransitionCallback?.Invoke(
+                    this,
+                    oldState,
+                    oldState,
+                    action,
+                    VTParseAction.None,
+                    VTParseAction.None,
+                    ch
+                );
             }
         }
 
