@@ -401,6 +401,7 @@ namespace VTParseSharp
         {
             for (int i = 0x00; i <= 0x17; i++)
                 stateRow[i] = SC(VTParseAction.Ignore);
+            stateRow[0x07] = SC(VTParseState.Ground);
             stateRow[0x19] = SC(VTParseAction.Ignore);
             for (int i = 0x1c; i <= 0x1f; i++)
                 stateRow[i] = SC(VTParseAction.Ignore);

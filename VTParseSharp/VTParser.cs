@@ -143,8 +143,7 @@ namespace VTParseSharp
 
                     if (_characterBytes == 1)
                     {
-                        byte change = (byte)VTParseAction.Print;
-                        DoStateChange(change, _utf8Character);
+                        DispatchUtf8Character(_utf8Character);
                     }
                 }
                 else if ((ch & (1 << 7)) != 0)
@@ -201,8 +200,7 @@ namespace VTParseSharp
 
                 if (_characterBytes == 1)
                 {
-                    byte change = (byte)VTParseAction.Print;
-                    DoStateChange(change, _utf8Character);
+                    DispatchUtf8Character(_utf8Character);
                 }
             }
             else if ((ch & (1 << 7)) != 0)
@@ -320,6 +318,28 @@ namespace VTParseSharp
                     ch
                 );
             }
+        }
+
+        private void DispatchUtf8Character(uint ch)
+        {
+            VTParseAction action;
+            switch (_state)
+            {
+                case VTParseState.Ground:
+                    action = VTParseAction.Print;
+                    break;
+                case VTParseState.OscString:
+                    action = VTParseAction.OscPut;
+                    break;
+                case VTParseState.DcsPassthrough:
+                    action = VTParseAction.Put;
+                    break;
+                default:
+                    action = VTParseAction.Ignore;
+                    break;
+            }
+
+            DoStateChange((byte)action, ch);
         }
 
         private void DoAction(VTParseAction action, uint ch)
